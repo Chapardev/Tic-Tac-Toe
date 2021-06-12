@@ -5,12 +5,12 @@
 #include <string>
 #include "raylib.h"
 
-bool operator==(const Color &color1, const Color &color2)
+inline bool operator==(const Color &color1, const Color &color2)
 {
     return color1.r == color2.r && color1.g == color2.g && color1.b == color2.b;
 }
 
-bool operator!=(const Color &color1, const Color &color2)
+inline bool operator!=(const Color &color1, const Color &color2)
 {
     return !(color1 == color2);
 }
@@ -33,7 +33,7 @@ void DrawBoard(const std::array<std::array<char, N>, N> &board, const std::array
     }
 }
 
-void DrawUpperText(const std::string &text, size_t size, const Color& color)
+inline void DrawUpperText(const std::string &text, size_t size, const Color& color)
 {
     const char *cText = text.c_str();
     DrawText(cText, (GetScreenWidth() - MeasureText(cText, size)) / 2, (GetScreenHeight() - GetScreenWidth() - size) / 2, size, color);
