@@ -17,12 +17,7 @@ int main()
     const char none = ' ', cross = 'X', circle = 'O';
     const std::array<char, side> states = {none, cross, circle};
 
-    std::array<std::array<Rectangle, side>, side> grid {{
-        {Rectangle{0}, Rectangle{0}, Rectangle{0}},
-        {Rectangle{0}, Rectangle{0}, Rectangle{0}},
-        {Rectangle{0}, Rectangle{0}, Rectangle{0}}
-    }};
-
+    std::array<std::array<Rectangle, side>, side> grid;
     for (size_t i = 0; i < grid.size(); i++)
     {
         for (size_t j = 0; j < grid[i].size(); j++)
@@ -35,11 +30,10 @@ int main()
         }
     }
 
-    std::array<std::array<char, side>, side> board {{
-        {none, none, none},
-        {none, none, none},
-        {none, none, none}
-    }};
+    std::array<std::array<char, side>, side> board;
+    for (size_t i = 0; i < board.size(); i++)
+        for (size_t j = 0; j < board[i].size(); j++)
+            board[i][j] = none;
 
     int player = 1;
     bool gameBegan = false, darkMode = false;
