@@ -41,7 +41,8 @@ int main()
     }};
 
     int player = 1;
-    bool gameBegan = false, alreadyPlaced = false;
+    bool gameBegan = false, alreadyPlaced = false, darkMode = false;
+    Color bgColor = WHITE;
 
     InitWindow(screenWidth, screenHeight, "Tic Tac Toe");
 
@@ -58,6 +59,10 @@ int main()
     while (!WindowShouldClose() && !CheckVictory<side>(board, states, player) && !CheckDraw<side>(board, states, player))
     {
         if (IsKeyPressed(KEY_F12)) TakeScreenshot("scr.png");
+        if (IsKeyPressed(KEY_ENTER)) darkMode = !darkMode;
+
+        if (!darkMode && bgColor != WHITE) bgColor = WHITE;
+        else if (darkMode && bgColor != BLACK) bgColor = BLACK;
 
         for (size_t i = 0; i < grid.size(); i++)
         {
@@ -81,19 +86,19 @@ int main()
 
         BeginDrawing();
 
-            ClearBackground(WHITE);
+            ClearBackground(bgColor);
             DrawBoard<side>(board, grid, states, texBoard, texCross, texCircle);
 
             if (gameBegan)
             {
                 if (!alreadyPlaced)
                 {
-                    if (player == 1) DrawUpperText("Player 1's turn!");
-                    else DrawUpperText("Player 2's turn!");
+                    if (player == 1) DrawUpperText("Player 1's turn!", 40, (darkMode ? WHITE : BLACK));
+                    else DrawUpperText("Player 2's turn!", 40, (darkMode ? WHITE : BLACK));
                 }
-                else DrawUpperText("Something was already placed in that box!", 25);
+                else DrawUpperText("Something was already placed in that box!", 25, (darkMode ? WHITE : BLACK));
             }
-            else DrawUpperText("Player 1 plays X, player 2 plays O", 30);
+            else DrawUpperText("Player 1 plays X, player 2 plays O", 30, (darkMode ? WHITE : BLACK));
 
         EndDrawing();
     }
@@ -101,10 +106,10 @@ int main()
     if (CheckVictory<side>(board, states, player))
     {
         const char *text = (player == 1) ? "Player 1 has won!" : "Player 2 has won!";
-        DrawGameOverScreen<side>(fps, text, board, grid, states, texBoard, texCross, texCircle);
+        DrawGameOverScreen<side>(fps, text, bgColor, board, grid, states, texBoard, texCross, texCircle);
     }
     else if (CheckDraw<side>(board, states, player)) 
-        DrawGameOverScreen<side>(fps, "Draw!", board, grid, states, texBoard, texCross, texCircle);
+        DrawGameOverScreen<side>(fps, "Draw!", bgColor, board, grid, states, texBoard, texCross, texCircle);
 
     UnloadTexture(texCircle);
     UnloadTexture(texCross);
