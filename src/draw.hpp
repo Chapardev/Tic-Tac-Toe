@@ -2,7 +2,7 @@
 #define DRAW_HPP
 
 #include <array>
-#include <iostream>
+#include <string>
 #include "raylib.h"
 
 bool operator==(const Color &color1, const Color &color2)
@@ -33,13 +33,14 @@ void DrawBoard(const std::array<std::array<char, N>, N> &board, const std::array
     }
 }
 
-void DrawUpperText(const char *text, size_t size, const Color& color)
+void DrawUpperText(const std::string &text, size_t size, const Color& color)
 {
-    DrawText(text, (GetScreenWidth() - MeasureText(text, size)) / 2, (GetScreenHeight() - GetScreenWidth() - size) / 2, size, color);
+    const char *cText = text.c_str();
+    DrawText(cText, (GetScreenWidth() - MeasureText(cText, size)) / 2, (GetScreenHeight() - GetScreenWidth() - size) / 2, size, color);
 }
 
 template<size_t N>
-void DrawGameOverScreen(int fps, const char *text, const Color &bgColor, const std::array<std::array<char, N>, N> &board, const std::array<std::array<Rectangle, N>, N> &grid, 
+void DrawGameOverScreen(int fps, const std::string &text, const Color &bgColor, const std::array<std::array<char, N>, N> &board, const std::array<std::array<Rectangle, N>, N> &grid, 
                         const std::array<char, N> &states, const Texture2D &texBoard, const Texture2D& texCross, const Texture2D &texCircle)
 {
     const Color textColor = (bgColor == WHITE) ? BLACK : WHITE;

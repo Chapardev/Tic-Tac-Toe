@@ -1,5 +1,6 @@
 #include "check.hpp"
 #include "draw.hpp"
+#include <iostream>
 
 int main()
 {
@@ -41,8 +42,9 @@ int main()
     }};
 
     int player = 1;
-    bool gameBegan = false, alreadyPlaced = false, darkMode = false;
+    bool gameBegan = false, darkMode = false;
     Color bgColor = WHITE;
+    std::string text = "";
 
     InitWindow(screenWidth, screenHeight, "Tic Tac Toe");
 
@@ -77,9 +79,9 @@ int main()
                         board[i][j] = states[player];
                         if (!CheckVictory<side>(board, states, player))
                             player = (player == 1) ? 2 : 1;
-                        alreadyPlaced = false;
+                        text = "Player " + std::to_string(player) + "'s turn!";
                     }
-                    else if (!alreadyPlaced) alreadyPlaced = true;
+                    else text = "Something was already placed in that box!";
                 }
             }
         }
@@ -89,15 +91,7 @@ int main()
             ClearBackground(bgColor);
             DrawBoard<side>(board, grid, states, texBoard, texCross, texCircle);
 
-            if (gameBegan)
-            {
-                if (!alreadyPlaced)
-                {
-                    if (player == 1) DrawUpperText("Player 1's turn!", 40, (darkMode ? WHITE : BLACK));
-                    else DrawUpperText("Player 2's turn!", 40, (darkMode ? WHITE : BLACK));
-                }
-                else DrawUpperText("Something was already placed in that box!", 25, (darkMode ? WHITE : BLACK));
-            }
+            if (gameBegan) DrawUpperText(text, ((text.length() > 16) ? 25 : 40), (darkMode ? WHITE : BLACK));
             else DrawUpperText("Player 1 plays X, player 2 plays O", 30, (darkMode ? WHITE : BLACK));
 
         EndDrawing();
@@ -105,7 +99,7 @@ int main()
 
     if (CheckVictory<side>(board, states, player))
     {
-        const char *text = (player == 1) ? "Player 1 has won!" : "Player 2 has won!";
+        text = "Player " + std::to_string(player) + " has won!";
         DrawGameOverScreen<side>(fps, text, bgColor, board, grid, states, texBoard, texCross, texCircle);
     }
     else if (CheckDraw<side>(board, states, player)) 
