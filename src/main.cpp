@@ -1,6 +1,4 @@
-#include "check.hpp"
-#include "draw.hpp"
-#include <iostream>
+#include "game.hpp"
 
 int main()
 {
