@@ -19,6 +19,7 @@ Game::Game() : m_player(1), m_gameBegan(false), m_darkMode(false), m_bgColor(WHI
             m_board[i][j] = c_none;
     
     InitWindow(c_screenWidth, c_screenHeight, "Tic Tac Toe");
+    InitAudioDevice();
 
     m_imgIcon = LoadImage("../assets/cross.png");
     SetWindowIcon(m_imgIcon);
@@ -28,15 +29,22 @@ Game::Game() : m_player(1), m_gameBegan(false), m_darkMode(false), m_bgColor(WHI
     m_texCross = LoadTexture("../assets/cross.png");
     m_texCircle = LoadTexture("../assets/circle.png");
 
+    m_player1Sound = LoadSound("../assets/player1.wav");
+    m_player2Sound = LoadSound("../assets/player2.wav");
+
     SetTargetFPS(c_fps);
 }
 
 Game::~Game()
 {
+    UnloadSound(m_player1Sound);
+    UnloadSound(m_player2Sound);
+
     UnloadTexture(m_texCircle);
     UnloadTexture(m_texCross);
     UnloadTexture(m_texBoard);
 
+    CloseAudioDevice();
     CloseWindow();
 }
 
@@ -76,8 +84,12 @@ void Game::Update()
                 if (m_board[i][j] == c_none)
                 {
                     m_board[i][j] = c_states[m_player];
+
+                    PlaySound(((m_player == 1) ? m_player1Sound : m_player2Sound));
+
                     if (!CheckVictory<c_side>(m_board, c_states, m_player))
                         m_player = (m_player == 1) ? 2 : 1;
+
                     m_text = "Player " + std::to_string(m_player) + "'s turn!";
                 }
                 else m_text = "Something was already placed in that box!";

@@ -41,6 +41,7 @@ private:
 
     Image m_imgIcon;
     Texture2D m_texBoard, m_texCross, m_texCircle;
+    Sound m_player1Sound, m_player2Sound;
 };
 
 #endif
