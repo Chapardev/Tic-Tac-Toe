@@ -1,5 +1,15 @@
 #include "game.hpp"
 
+bool operator==(const Color &color1, const Color &color2)
+{
+    return ((color1.r == color2.r) && (color1.g == color2.g) && (color1.b == color2.b));
+}
+
+bool operator!=(const Color &color1, const Color &color2)
+{
+    return !(color1 == color2);
+}
+
 void Game::_InitArrays()
 {
     const int lineThickness = 5;
@@ -65,21 +75,71 @@ Game::~Game()
     CloseWindow();
 }
 
+bool Game::CheckRows() const
+{
+    BoxStates playerState = static_cast<BoxStates>(m_player);
+    for (size_t i = 0; i < m_board.size(); i++)
+        if (m_board[0][i] == playerState && m_board[1][i] == playerState && m_board[2][i] == playerState)
+            return true;
+    return false;
+}
+
+bool Game::CheckColumns() const
+{
+    BoxStates playerState = static_cast<BoxStates>(m_player);
+    for (size_t i = 0; i < m_board.size(); i++)
+        if (m_board[i][0] == playerState && m_board[i][1] == playerState && m_board[i][2] == playerState)
+            return true;
+    return false;
+}
+
+bool Game::CheckDiagonals() const
+{
+    BoxStates playerState = static_cast<BoxStates>(m_player);
+
+    bool result = true;
+    for (size_t i = 0; i < m_board.size(); i++)
+        if (m_board[i][i] != playerState)
+            result = false;
+    if (result) 
+        return result;
+    
+    result = true;
+    for (size_t i = 0; i < m_board.size(); i++)
+        if (m_board[m_board.size() - i - 1][i] != playerState)
+            result = false;
+    return result;
+}
+
+bool Game::CheckVictory() const
+{
+    return this->CheckRows() || this->CheckColumns() || this->CheckDiagonals();
+}
+
+bool Game::CheckDraw() const
+{
+    for (size_t i = 0; i < m_board.size(); i++)
+        for (size_t j = 0; j < m_board[i].size(); j++)
+            if (m_board[i][j] == BoxStates::NONE)
+                return false;
+    return !this->CheckVictory();
+}
+
 void Game::Run()
 {
-    while (!WindowShouldClose() && !CheckVictory(m_board, m_player) && !CheckDraw(m_board, m_player))
+    while (!WindowShouldClose() && !CheckVictory() && !CheckDraw())
     {
         this->Update();
         this->Draw();
     }
 
-    if (CheckVictory(m_board, m_player))
+    if (CheckVictory())
     {
         m_text = "Player " + std::to_string(m_player) + " has won!";
-        DrawGameOverScreen(m_text, m_bgColor, m_board, m_grid, m_texBoard, m_texCross, m_texCircle);
+        DrawGameOverScreen(m_text);
     }
-    else if (CheckDraw(m_board, m_player))
-        DrawGameOverScreen("Draw!", m_bgColor, m_board, m_grid, m_texBoard, m_texCross, m_texCircle);
+    else if (CheckDraw())
+        DrawGameOverScreen("Draw!");
 }
 
 void Game::Update()
@@ -104,7 +164,7 @@ void Game::Update()
 
                     PlaySound(((m_player == 1) ? m_player1Sound : m_player2Sound));
 
-                    if (!CheckVictory(m_board, m_player))
+                    if (!CheckVictory())
                         m_player = (m_player == 1) ? 2 : 1;
 
                     m_text = "Player " + std::to_string(m_player) + "'s turn!";
@@ -115,15 +175,60 @@ void Game::Update()
     }
 }
 
+void Game::DrawBoard()
+{
+    DrawTexture(m_texBoard, 0, GetScreenHeight() - m_texBoard.height, WHITE);
+
+    for (size_t i = 0; i < m_board.size(); i++)
+    {
+        for (size_t j = 0; j < m_board[i].size(); j++)
+        {
+            if (m_board[i][j] == BoxStates::CROSS)
+                DrawTexture(m_texCross, m_grid[i][j].x + 5, m_grid[i][j].y + 5, WHITE);
+            else if (m_board[i][j] == BoxStates::CIRCLE)
+                DrawTexture(m_texCircle, m_grid[i][j].x + 5, m_grid[i][j].y + 5, WHITE);
+        }
+    }
+}
+
+void Game::DrawTopText(const std::string &text, const size_t size)
+{
+    DrawText(
+        text.c_str(), (GetScreenWidth() - MeasureText(text.c_str(), size)) / 2, 
+        (GetScreenHeight() - GetScreenWidth() - size) / 2, size, (m_darkMode ? WHITE : BLACK)
+    );
+}
+
+void Game::DrawGameOverScreen(const std::string &text)
+{
+    int timer = (int)GetFrameTime();
+
+    while (timer <= GetFPS())
+    {
+        timer++;
+        
+        BeginDrawing();
+
+            ClearBackground(m_bgColor);
+            this->DrawBoard();
+            this->DrawTopText(text, 40);
+
+        EndDrawing();
+    }
+}
+
 void Game::Draw()
 {
     BeginDrawing();
 
         ClearBackground(m_bgColor);
-        DrawBoard(m_board, m_grid, m_texBoard, m_texCross, m_texCircle);
 
-        if (m_gameBegan) DrawUpperText(m_text, ((m_text.length() > 16) ? 25 : 40), (m_darkMode ? WHITE : BLACK));
-        else DrawUpperText("Player 1 plays X, player 2 plays O", 30, (m_darkMode ? WHITE : BLACK));
+        this->DrawBoard();
+        
+        if (m_gameBegan) 
+            this->DrawTopText(m_text, ((m_text.length() > 16) ? 25 : 40));
+        else
+            this->DrawTopText("Player 1 plays X, player 2 plays O", 30);
 
     EndDrawing();
 }

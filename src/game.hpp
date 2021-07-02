@@ -1,10 +1,15 @@
 #ifndef GAME_HPP
 #define GAME_HPP
 
-#include "check.hpp"
-#include "draw.hpp"
+#include <array>
+#include <iostream>
+#include <string>
+#include "raylib.h"
 
-enum class A;
+enum class BoxStates { NONE, CROSS, CIRCLE };
+
+bool operator==(const Color &color1, const Color &color2);
+bool operator!=(const Color &color1, const Color &color2);
 
 class Game
 {
@@ -17,8 +22,23 @@ public:
     Game();
     ~Game();
 
+    bool CheckRows() const;
+    bool CheckColumns() const;
+    bool CheckDiagonals() const;
+
+    bool CheckVictory() const;
+    bool CheckDraw() const;
+
+    // Runs the game loop.
     void Run();
+
     void Update();
+
+    /* Draw methods */
+
+    void DrawBoard();
+    void DrawTopText(const std::string &text, const size_t size);
+    void DrawGameOverScreen(const std::string &text);
     void Draw();
 
 private:
