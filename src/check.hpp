@@ -1,8 +1,7 @@
 #ifndef CHECK_HPP
 #define CHECK_HPP
 
-#include <iostream>
-#include <array>
+#include "precompiled.hpp"
 
 bool CheckRows(const std::array<std::array<char, 3>, 3>& board, const std::array<char, 3>& states, int player);
 bool CheckColumns(const std::array<std::array<char, 3>, 3>& board, const std::array<char, 3>& states, int player);

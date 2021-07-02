@@ -1,11 +1,7 @@
 #ifndef DRAW_HPP
 #define DRAW_HPP
 
-#include <array>
-#include <string>
-#include "raylib.h"
-
-enum class BoxStates { NONE, CROSS, CIRCLE };
+#include "precompiled.hpp"
 
 bool operator==(const Color &color1, const Color &color2);
 bool operator!=(const Color &color1, const Color &color2);
