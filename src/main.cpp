@@ -2,8 +2,7 @@
 
 int main()
 {
-    Game game;
-    game.Run();
+    Game().Run();
 
     return 0;
 }
