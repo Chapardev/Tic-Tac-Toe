@@ -4,12 +4,12 @@
 #include <array>
 #include <iostream>
 #include <string>
-#include "raylib.h"
+#include "Line.hpp"
 
 enum class BoxStates { NONE, CROSS, CIRCLE };
 
-bool operator==(const Color &color1, const Color &color2);
-bool operator!=(const Color &color1, const Color &color2);
+bool operator==(const Color &left, const Color &right);
+bool operator!=(const Color &left, const Color &right);
 
 class Game
 {
@@ -22,12 +22,12 @@ public:
     Game();
     ~Game();
 
-    bool CheckRows() const;
-    bool CheckColumns() const;
-    bool CheckDiagonals() const;
+    bool CheckRows();
+    bool CheckColumns();
+    bool CheckDiagonals();
 
-    bool CheckVictory() const;
-    bool CheckDraw() const;
+    bool CheckVictory();
+    bool CheckDraw();
 
     // Runs the game loop.
     void Run();
@@ -54,9 +54,7 @@ private:
     Texture2D m_texCross, m_texCircle;
     Sound m_player1Sound, m_player2Sound;
 
-    // Starts pos and end pos for the line
-    // Vector2 m_startPos;
-    // Vector2 m_endPos;
+    Line m_line;
 };
 
 #endif

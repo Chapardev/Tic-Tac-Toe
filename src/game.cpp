@@ -1,13 +1,13 @@
-#include "game.hpp"
+#include "Game.hpp"
 
-bool operator==(const Color &color1, const Color &color2)
+bool operator==(const Color &left, const Color &right)
 {
-    return ((color1.r == color2.r) && (color1.g == color2.g) && (color1.b == color2.b));
+    return ((left.r == right.r) && (left.g == right.g) && (left.b == right.b));
 }
 
-bool operator!=(const Color &color1, const Color &color2)
+bool operator!=(const Color &left, const Color &right)
 {
-    return !(color1 == color2);
+    return !(left == right);
 }
 
 void Game::_InitArrays()
@@ -73,25 +73,61 @@ Game::~Game()
     CloseWindow();
 }
 
-bool Game::CheckRows() const
+bool Game::CheckRows()
 {
     BoxStates playerState = static_cast<BoxStates>(m_player);
     for (size_t i = 0; i < m_board.size(); i++)
+    {
         if (m_board[0][i] == playerState && m_board[1][i] == playerState && m_board[2][i] == playerState)
+        {
+            const float thickness = 5.f;
+
+            const Vector2 startPos = {
+                m_grid[0][i].x + m_grid[0][i].width / 4.f, 
+                m_grid[0][i].y + m_grid[0][i].height / 2.f - thickness
+            };
+            
+            const Vector2 endPos = {
+                m_grid[2][i].x + m_grid[2][i].width * 0.75f,
+                m_grid[2][i].y + m_grid[2][i].height / 2.f - thickness
+            };
+
+            m_line = Line(startPos, endPos, thickness);
+
             return true;
+        }
+    }
     return false;
 }
 
-bool Game::CheckColumns() const
+bool Game::CheckColumns()
 {
     BoxStates playerState = static_cast<BoxStates>(m_player);
     for (size_t i = 0; i < m_board.size(); i++)
+    {
         if (m_board[i][0] == playerState && m_board[i][1] == playerState && m_board[i][2] == playerState)
+        {
+            const float thickness = 5.f;
+
+            const Vector2 startPos = {
+                m_grid[i][0].x + m_grid[i][0].width / 2.f - thickness, 
+                m_grid[i][0].y + m_grid[i][0].height / 4.f
+            };
+            
+            const Vector2 endPos = {
+                m_grid[i][2].x + m_grid[i][2].width / 2.f - thickness,
+                m_grid[i][2].y + m_grid[i][2].height * 0.75f
+            };
+
+            m_line = Line(startPos, endPos, thickness);
+
             return true;
+        }
+    }
     return false;
 }
 
-bool Game::CheckDiagonals() const
+bool Game::CheckDiagonals()
 {
     BoxStates playerState = static_cast<BoxStates>(m_player);
 
@@ -100,21 +136,55 @@ bool Game::CheckDiagonals() const
         if (m_board[i][i] != playerState)
             result = false;
     if (result) 
+    {
+        const float thickness = 5.f;
+
+        const Vector2 startPos = {
+            m_grid[0][0].x + m_grid[0][0].width / 2.f - thickness * 3, 
+            m_grid[0][0].y + m_grid[0][0].height / 2.f - thickness * 3
+        };
+        
+        const Vector2 endPos = {
+            m_grid[2][2].x + m_grid[2][2].width / 2.f,
+            m_grid[2][2].y + m_grid[2][2].height / 2.f
+        };
+
+        m_line = Line(startPos, endPos, thickness);
+
         return result;
+    }
     
     result = true;
     for (size_t i = 0; i < m_board.size(); i++)
         if (m_board[m_board.size() - i - 1][i] != playerState)
             result = false;
+
+    if (result)
+    {
+        const float thickness = 5.f;
+
+        const Vector2 startPos = {
+            m_grid[0][2].x + m_grid[0][2].width / 2.f - thickness * 4.3f,
+            m_grid[0][2].y + m_grid[0][2].height / 2.f + thickness * 1.4f
+        };
+        
+        const Vector2 endPos = {
+            m_grid[2][0].x + m_grid[2][0].width / 2.f + thickness * 1.4f,
+            m_grid[2][0].y + m_grid[2][0].height / 2.f - thickness * 4.3f
+        };
+
+        m_line = Line(startPos, endPos, thickness);
+    }
+
     return result;
 }
 
-bool Game::CheckVictory() const
+bool Game::CheckVictory()
 {
-    return this->CheckRows() || this->CheckColumns() || this->CheckDiagonals();
+    return (this->CheckRows() || this->CheckColumns() || this->CheckDiagonals());
 }
 
-bool Game::CheckDraw() const
+bool Game::CheckDraw()
 {
     for (size_t i = 0; i < m_board.size(); i++)
         for (size_t j = 0; j < m_board[i].size(); j++)
@@ -210,6 +280,8 @@ void Game::DrawGameOverScreen(const std::string &text)
             ClearBackground(m_bgColor);
             this->DrawBoard();
             this->DrawTopText(text, 40);
+
+            m_line.Draw((m_darkMode ? WHITE : BLACK));
 
         EndDrawing();
     }
