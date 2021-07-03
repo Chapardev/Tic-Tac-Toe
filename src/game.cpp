@@ -39,7 +39,6 @@ void Game::_LoadGraphics()
     SetWindowIcon(m_imgIcon);
     UnloadImage(m_imgIcon);
 
-    m_texBoard = LoadTexture("../assets/board.png");
     m_texCross = LoadTexture("../assets/cross.png");
     m_texCircle = LoadTexture("../assets/circle.png");
 }
@@ -69,7 +68,6 @@ Game::~Game()
 
     UnloadTexture(m_texCircle);
     UnloadTexture(m_texCross);
-    UnloadTexture(m_texBoard);
 
     CloseAudioDevice();
     CloseWindow();
@@ -177,12 +175,12 @@ void Game::Update()
 
 void Game::DrawBoard()
 {
-    DrawTexture(m_texBoard, 0, GetScreenHeight() - m_texBoard.height, WHITE);
-
     for (size_t i = 0; i < m_board.size(); i++)
     {
         for (size_t j = 0; j < m_board[i].size(); j++)
         {
+            DrawRectangleRec(m_grid[i][j], BLUE);
+
             if (m_board[i][j] == BoxStates::CROSS)
                 DrawTexture(m_texCross, m_grid[i][j].x + 5, m_grid[i][j].y + 5, WHITE);
             else if (m_board[i][j] == BoxStates::CIRCLE)

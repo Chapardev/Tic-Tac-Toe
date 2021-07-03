@@ -51,8 +51,12 @@ private:
     std::array<std::array<BoxStates, 3>, 3> m_board;
 
     Image m_imgIcon;
-    Texture2D m_texBoard, m_texCross, m_texCircle;
+    Texture2D m_texCross, m_texCircle;
     Sound m_player1Sound, m_player2Sound;
+
+    // Starts pos and end pos for the line
+    // Vector2 m_startPos;
+    // Vector2 m_endPos;
 };
 
 #endif
