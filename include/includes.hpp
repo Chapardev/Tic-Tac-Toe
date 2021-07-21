@@ -6,6 +6,7 @@
 #include <array>
 #include <string>
 #include <map>
+#include <memory>
 
 // Raylib
 #include "raylib.h"
