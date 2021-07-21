@@ -1,9 +1,6 @@
 #ifndef GAME_HPP
 #define GAME_HPP
 
-#include <array>
-#include <iostream>
-#include <string>
 #include "Line.hpp"
 
 enum class BoxStates { NONE, CROSS, CIRCLE };
@@ -22,12 +19,12 @@ public:
     Game();
     ~Game();
 
-    bool CheckRows();
-    bool CheckColumns();
-    bool CheckDiagonals();
+    bool CheckRows() const;
+    bool CheckColumns() const;
+    bool CheckDiagonals() const;
 
-    bool CheckVictory();
-    bool CheckDraw();
+    bool CheckVictory() const;
+    bool CheckDraw() const;
 
     // Runs the game loop.
     void Run();
@@ -36,10 +33,10 @@ public:
 
     /* Draw methods */
 
-    void DrawBoard();
-    void DrawTopText(const std::string &text, const size_t size);
-    void DrawGameOverScreen(const std::string &text);
-    void Draw();
+    void DrawBoard() const;
+    void DrawTopText(const std::string &text, size_t size) const;
+    void DrawGameOverScreen(const std::string &text) const;
+    void Draw() const;
 
 private:
     int m_player;
@@ -47,14 +44,14 @@ private:
     Color m_bgColor;
     std::string m_text;
 
-    std::array<std::array<Rectangle, 3>, 3> m_grid;
-    std::array<std::array<BoxStates, 3>, 3> m_board;
+    std::array<std::array<std::pair<BoxStates, Rectangle>, 3>, 3> m_boxes;
 
     Image m_imgIcon;
-    Texture2D m_texCross, m_texCircle;
-    Sound m_player1Sound, m_player2Sound;
 
-    Line m_line;
+    std::map<std::string, Texture2D> m_textures;
+    std::map<std::string, Sound> m_sounds;
+
+    mutable Line m_line;
 };
 
 #endif

@@ -1,2 +1,6 @@
+checks = -Wall -Wextra -pedantic-errors
+libs = -lraylib -lopengl32 -lgdi32 -lwinmm
+no_console = -Wl,-subsystem,windows
+
 default:
-	g++ -std=c++17 ../src/*.cpp -o TicTacToe -O2 -Wall -Wno-missing-braces -I ../include -L ../lib -lraylib -lopengl32 -lgdi32 -lwinmm -Wl,-subsystem,windows
+	g++ -std=c++17 -O2 ../src/*.cpp -o TicTacToe $(checks) -I ../include -L ../lib $(libs) $(no_console)
